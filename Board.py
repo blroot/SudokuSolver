@@ -2,8 +2,6 @@ class Board:
     def __init__(self, data):
         self._data = data
         self._n = len(self._data[0])
-        self._last_insert_i = None
-        self._last_insert_j = None
 
     def is_full(self):
         for row in self._data:
@@ -13,8 +11,6 @@ class Board:
         return True
 
     def register(self, i, j, value):
-        self._last_insert_i = i
-        self._last_insert_j = j
         self._data[i][j] = value
 
     def column_iterator(self):
@@ -38,7 +34,6 @@ class Board:
         column = [self._data[x][j] for x in range(self._n)]
         sub_index = self._sub_board_index(i, j)
         sub_board = self._sub_board(sub_index)
-        # print(sub_board)
 
         if self._data[i][j] == 0 \
                 and (value not in column and value not in self._data[i] and value not in sub_board):

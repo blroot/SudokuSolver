@@ -5,7 +5,7 @@ class Solver:
 
     def solve(self):
         if self._board.is_full():
-            self._solutions.append(self._board.solution[:][:])
+            self._solutions.append(self._board.solution)
         else:
             pos = self._board.find_next_available()
             i, j = pos

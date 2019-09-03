@@ -3,12 +3,14 @@ from exceptions import InvalidRowLength, NotAnInteger, NotAValidInteger
 from Board import Board
 
 
-class CsvLoader:
-    def __init__(self):
+class CsvHandler:
+    def __init__(self, source="boards.csv", results="results.csv"):
         self.boards_dict = {}
+        self.source_file = source
+        self.results_file = results
 
     def read_boards_file(self):
-        with open("tableros.csv") as csv_file:
+        with open(self.source_file) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=",")
             board_number = 0
             row_count = 0
@@ -34,3 +36,11 @@ class CsvLoader:
                     board = []
                     row_count = 0
                     board_number += 1
+
+    def write_results_to_file(self, results):
+        with open(self.results_file, mode="w") as csv_file:
+            csv_writer = csv.writer(csv_file, lineterminator='\n')
+            for key in results:
+                result = results.get(key)
+                for board in result:
+                    csv_writer.writerows(board)

@@ -1,18 +1,19 @@
-from CsvLoader import CsvLoader
+from CsvHandler import CsvHandler
 from exceptions import InvalidRowLength, NotAnInteger, NotAValidInteger
 from Solver import Solver
 
 
 if __name__=="__main__":
-    loader = CsvLoader()
+    csv_handler = CsvHandler("tableros.csv", "resultados.csv")
     try:
         results = {}
-        loader.read_boards_file()
-        for key in loader.boards_dict:
-            solver = Solver(loader.boards_dict.get(key))
+        csv_handler.read_boards_file()
+        for key in csv_handler.boards_dict:
+            solver = Solver(csv_handler.boards_dict.get(key))
             solver.solve()
             results.setdefault(key, solver._solutions)
-        print(results)
+
+        csv_handler.write_results_to_file(results)
 
     except InvalidRowLength as e:
         print("La fila %s no tiene la dimensión correcta" % e.row_number)
