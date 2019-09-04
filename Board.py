@@ -28,9 +28,6 @@ class Board:
         return False
 
     def is_plausible(self, i, j, value):
-        # if i-1 >= 0 and 0 in self._data[i-1]:
-        #    return False
-
         column = [self._data[x][j] for x in range(self._n)]
         sub_index = self._sub_board_index(i, j)
         sub_board = self._sub_board(sub_index)

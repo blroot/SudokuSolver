@@ -1,15 +1,16 @@
 import csv
 from exceptions import InvalidRowLength, NotAnInteger, NotAValidInteger
 from Board import Board
+import pickle
 
 
-class CsvHandler:
-    def __init__(self, source="boards.csv", results="results.csv"):
+class FileHandler:
+    def __init__(self, source, results):
         self.boards_dict = {}
         self.source_file = source
         self.results_file = results
 
-    def read_boards_file(self):
+    def read_boards_file_csv(self):
         with open(self.source_file) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=",")
             board_number = 0
@@ -44,3 +45,9 @@ class CsvHandler:
                 result = results.get(key)
                 for board in result:
                     csv_writer.writerows(board)
+
+    def persist(self, dump_name):
+        pickle.dump(self.boards_dict, open(dump_name, "wb"))
+
+    def load_boards_file_dump(self):
+        self.boards_dict = pickle.load(open(self.source_file, "rb"))
