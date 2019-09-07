@@ -1,12 +1,20 @@
 from os import system
 from Solver import Solver
 from FileHandler import FileHandler
+from Board import Board
+import time
 import datetime
 
 
 class Menu:
     def __init__(self):
-        self.menu_options = {1: self.solve_from_csv, 2: self.save_partial, 3: self.load_partial, 4: exit}
+        self.menu_options = {
+            1: self.solve_from_csv,
+            2: self.save_partial,
+            3: self.load_partial,
+            4: self.test_bench,
+            5: exit
+        }
 
     def display_menu(self):
         system('cls')
@@ -14,15 +22,19 @@ class Menu:
         print("1 - Resolver tableros desde archivo CSV")
         print("2 - Guardar ejecución parcial")
         print("3 - Continuar una resolución guardada")
-        print("4 - Salir")
+        print("4 - Banco de pruebas")
+        print("5 - Salir")
 
-        option = int(input("Seleccione una opción [1-4]: "))
+        try:
+            option = int(input("Seleccione una opción [1-4]: "))
 
-        option_function = self.menu_options.get(option, None)
-        if not option_function:
-            print("%s no es una opción válida" % option)
-        else:
-            option_function()
+            option_function = self.menu_options.get(option, None)
+            if not option_function:
+                print("%s no es una opción válida" % option)
+            else:
+                option_function()
+        except ValueError:
+            print("la opción ingresada no corresponde a un número")
 
     def solve_from_csv(self):
         input_file = str(input("Ingrese la ruta del archivo de entrada: "))
@@ -71,3 +83,18 @@ class Menu:
 
         file_handler.write_results_to_file(results)
         print("Ha finalizado la resolución! encontrará en %s los resultados" % output_file)
+
+    def test_bench(self):
+        n_list = [9, 16, 25, 36, 49]
+
+        for index, i in enumerate(n_list):
+            board = Board([[0 for x in range(i)] for y in range(i)])
+            solver = Solver(board, target_solutions=10)
+            start = time.time()
+            solver.solve()
+            end = time.time()
+            print("Tablero %sx%s, %s Soluciones" % (i, i, len(solver.solutions)))
+            print(solver.solutions)
+            print("%s segundos" % str((end-start)/10))
+
+

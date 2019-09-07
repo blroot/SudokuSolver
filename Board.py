@@ -1,7 +1,11 @@
+import math
+
+
 class Board:
     def __init__(self, data):
         self._data = data
         self._n = len(self._data[0])
+        self._r = int(math.sqrt(self._n))
 
     def is_full(self):
         for row in self._data:
@@ -29,55 +33,19 @@ class Board:
 
     def is_plausible(self, i, j, value):
         column = [self._data[x][j] for x in range(self._n)]
-        sub_index = self._sub_board_index(i, j)
-        sub_board = self._sub_board(sub_index)
+        in_box = self._is_in_box(i - i % self._r, j - j % self._r, value)
 
-        if self._data[i][j] == 0 \
-                and (value not in column and value not in self._data[i] and value not in sub_board):
+        if self._data[i][j] == 0 and (value not in column and value not in self._data[i] and not in_box):
             return True
         else:
             return False
 
-    @staticmethod
-    def _sub_board_index(i, j):
-        sub_board_index = [0, 0]
-        if i in [0, 1, 2]:
-            sub_board_index[0] = 0
-        elif i in [3, 4, 5]:
-            sub_board_index[0] = 1
-        elif i in [6, 7, 8]:
-            sub_board_index[0] = 2
-
-        if j in [0, 1, 2]:
-            sub_board_index[1] = 0
-        elif j in [3, 4, 5]:
-            sub_board_index[1] = 1
-        elif j in [6, 7, 8]:
-            sub_board_index[1] = 2
-
-        return sub_board_index
-
-    def _sub_board(self, index):
-        if index == [0, 0]:
-            return self._data[0][0:3] + self._data[1][0:3] + self._data[2][0:3]
-        if index == [0, 1]:
-            return self._data[0][3:6] + self._data[1][3:6] + self._data[2][3:6]
-        if index == [0, 2]:
-            return self._data[0][6:9] + self._data[1][6:9] + self._data[2][6:9]
-
-        if index == [1, 0]:
-            return self._data[3][0:3] + self._data[4][0:3] + self._data[5][0:3]
-        if index == [1, 1]:
-            return self._data[3][3:6] + self._data[4][3:6] + self._data[5][3:6]
-        if index == [1, 2]:
-            return self._data[3][6:9] + self._data[4][6:9] + self._data[5][6:9]
-
-        if index == [2, 0]:
-            return self._data[6][0:3] + self._data[7][0:3] + self._data[8][0:3]
-        if index == [2, 1]:
-            return self._data[6][3:6] + self._data[7][3:6] + self._data[8][3:6]
-        if index == [2, 2]:
-            return self._data[6][6:9] + self._data[7][6:9] + self._data[8][6:9]
+    def _is_in_box(self, i, j, value):
+        for k in range(self._r):
+            for l in range(self._r):
+                if self._data[k + i][l + j] == value:
+                    return True
+        return False
 
     def print(self):
         string = ""
@@ -97,3 +65,7 @@ class Board:
 
     def __repr__(self):
         return str(self._data)
+
+    @property
+    def n(self):
+        return self._n
