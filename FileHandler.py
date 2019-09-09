@@ -1,6 +1,5 @@
 import csv
 from exceptions import InvalidRowLength, NotAnInteger, NotAValidInteger
-from Board import Board
 import pickle
 
 
