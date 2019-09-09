@@ -17,7 +17,6 @@ class Menu:
         }
 
     def display_menu(self):
-        system('cls')
         print("Bienvenido.... Por favor, seleccione una opción")
         print("1 - Resolver tableros desde archivo CSV")
         print("2 - Guardar ejecución parcial")
@@ -26,7 +25,7 @@ class Menu:
         print("5 - Salir")
 
         try:
-            option = int(input("Seleccione una opción [1-4]: "))
+            option = int(input("Seleccione una opción [1-5]: "))
 
             option_function = self.menu_options.get(option, None)
             if not option_function:
@@ -42,16 +41,20 @@ class Menu:
 
         file_handler = FileHandler(input_file, output_file)
         results = {}
-        file_handler.read_boards_file_csv()
 
         try:
-            for key in file_handler.boards_dict:
-                solver = Solver(file_handler.boards_dict.get(key), target_solutions=1)
+            file_handler.read_boards_file_csv()
+            for key in range(file_handler.boards_count):
+                board = Board(file_handler.get_board(key))
+                solver = Solver(board, target_solutions=1)
                 solver.solve()
                 results.setdefault(key, solver.solutions)
+        except FileNotFoundError:
+            print("No se encontró el archivo especificado")
+            self.display_menu()
         except KeyboardInterrupt:
             dump_name = datetime.datetime.now().strftime("%Y-%b-%d_%H-%M-%S") + ".save"
-            self.save_partial(file_handler, dump_name)
+            self.save_partial(file_handler, results, dump_name)
             print("Se ha interrumpido la ejecución, dump guardado en %s" % dump_name)
             exit(0)
 
@@ -59,8 +62,8 @@ class Menu:
         print("Ha finalizado la resolución! encontrará en %s los resultados" % output_file)
 
     @staticmethod
-    def save_partial(csv_handler, dump_name):
-        csv_handler.persist(dump_name)
+    def save_partial(csv_handler, results, dump_name):
+        csv_handler.persist(results, dump_name)
 
     def load_partial(self):
         input_file = str(input("Ingrese la ruta del dump de entrada: "))
@@ -68,13 +71,17 @@ class Menu:
 
         file_handler = FileHandler(input_file, output_file)
         results = {}
-        file_handler.load_boards_file_dump()
 
         try:
-            for key in file_handler.boards_dict:
-                solver = Solver(file_handler.boards_dict.get(key))
+            file_handler.load_boards_file_dump()
+            for key in range(file_handler.boards_count):
+                board = Board(file_handler.get_board(key))
+                solver = Solver(board)
                 solver.solve()
                 results.setdefault(key, solver.solutions)
+        except FileNotFoundError:
+            print("No se encontró el archivo especificado")
+            self.display_menu()
         except KeyboardInterrupt:
             dump_name = datetime.datetime.now().strftime("%Y-%b-%d_%H-%M-%S") + ".save"
             self.save_partial(file_handler, dump_name)
@@ -93,8 +100,5 @@ class Menu:
             start = time.time()
             solver.solve()
             end = time.time()
-            print("Tablero %sx%s, %s Soluciones, %s Segundos/solución" % (i, i, len(solver.solutions), str((end-start)/10)))
-            # print(solver.solutions)
-            # print("%s segundos" % str((end-start)/10))
-
-
+            print("Tablero %sx%s, %s Soluciones, %s Segundos/solución" %
+                  (i, i, len(solver.solutions), str((end-start)/10)))

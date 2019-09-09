@@ -6,7 +6,7 @@ import pickle
 
 class FileHandler:
     def __init__(self, source, results):
-        self.boards_dict = {}
+        self._boards_dict = {}
         self.source_file = source
         self.results_file = results
 
@@ -33,7 +33,7 @@ class FileHandler:
                 board.append(row)
 
                 if row_count == 9:
-                    self.boards_dict.setdefault(board_number, Board(board))
+                    self._boards_dict.setdefault(board_number, board)
                     board = []
                     row_count = 0
                     board_number += 1
@@ -46,8 +46,19 @@ class FileHandler:
                 for board in result:
                     csv_writer.writerows(board)
 
-    def persist(self, dump_name):
-        pickle.dump(self.boards_dict, open(dump_name, "wb"))
+    def persist(self, results, dump_name):
+        # Se reemplazan los tableros ya resueltos
+        for key in results:
+            self._boards_dict[key] = results.get(key)[0]
+
+        pickle.dump(self._boards_dict, open(dump_name, "wb"))
 
     def load_boards_file_dump(self):
-        self.boards_dict = pickle.load(open(self.source_file, "rb"))
+        self._boards_dict = pickle.load(open(self.source_file, "rb"))
+
+    @property
+    def boards_count(self):
+        return len(self._boards_dict.keys())
+
+    def get_board(self, index):
+        return [row[:] for row in self._boards_dict.get(index)]
