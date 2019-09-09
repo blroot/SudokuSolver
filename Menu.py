@@ -46,7 +46,7 @@ class Menu:
 
         try:
             for key in file_handler.boards_dict:
-                solver = Solver(file_handler.boards_dict.get(key))
+                solver = Solver(file_handler.boards_dict.get(key), target_solutions=1)
                 solver.solve()
                 results.setdefault(key, solver.solutions)
         except KeyboardInterrupt:
@@ -89,12 +89,12 @@ class Menu:
 
         for index, i in enumerate(n_list):
             board = Board([[0 for x in range(i)] for y in range(i)])
-            solver = Solver(board, target_solutions=10)
+            solver = Solver(board, target_solutions=10, emtpy_board=True)
             start = time.time()
             solver.solve()
             end = time.time()
-            print("Tablero %sx%s, %s Soluciones" % (i, i, len(solver.solutions)))
-            print(solver.solutions)
-            print("%s segundos" % str((end-start)/10))
+            print("Tablero %sx%s, %s Soluciones, %s Segundos/solución" % (i, i, len(solver.solutions), str((end-start)/10)))
+            # print(solver.solutions)
+            # print("%s segundos" % str((end-start)/10))
 
 
