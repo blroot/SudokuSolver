@@ -17,10 +17,6 @@ class Board:
     def register(self, i, j, value):
         self._data[i][j] = value
 
-    def column_iterator(self):
-        columns = range(self._n)
-        return iter(columns)
-
     def delete(self, i, j):
         self._data[i][j] = 0
 

@@ -29,7 +29,7 @@ class TestBoard(unittest.TestCase):
 
         board.register(0, 2, 1)
 
-        self.assertEquals(1, board.get_solution[0][2])
+        self.assertEqual(1, board.solution[0][2])
 
     def test_delete(self):
         board = Board([[0, 8, 0, 5, 7, 6, 2, 0, 0],
@@ -43,9 +43,9 @@ class TestBoard(unittest.TestCase):
                        [0, 4, 0, 0, 0, 0, 0, 0, 6]])
 
         board.register(0, 2, 1)
-        board.delete()
+        board.delete(0, 2)
 
-        self.assertEquals(0, board.get_solution[0][2])
+        self.assertEqual(0, board.solution[0][2])
 
     def test_full(self):
         board = Board([[9, 8, 4, 5, 7, 6, 2, 1, 3],
