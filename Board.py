@@ -65,12 +65,3 @@ class Board:
     @property
     def n(self):
         return self._n
-
-    @property
-    def data(self):
-        return self._data
-
-    @data.setter
-    def data(self, data):
-        self._data = data
-
