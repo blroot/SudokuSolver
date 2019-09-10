@@ -1,4 +1,3 @@
-from os import system
 from Solver import Solver
 from FileHandler import FileHandler
 from Board import Board
@@ -6,7 +5,7 @@ import time
 import datetime
 
 
-class Menu:
+class ConsoleApp:
     def __init__(self):
         self.menu_options = {
             1: self.solve_from_csv,
@@ -46,7 +45,7 @@ class Menu:
             file_handler.read_boards_file_csv()
             for key in range(file_handler.boards_count):
                 board = Board(file_handler.get_board(key))
-                solver = Solver(board, target_solutions=1)
+                solver = Solver(board, target_solutions=1, callback=self.show_solution_callback)
                 solver.solve()
                 results.setdefault(key, solver.solutions)
         except FileNotFoundError:
@@ -76,7 +75,7 @@ class Menu:
             file_handler.load_boards_file_dump()
             for key in range(file_handler.boards_count):
                 board = Board(file_handler.get_board(key))
-                solver = Solver(board)
+                solver = Solver(board, callback=self.show_solution_callback)
                 solver.solve()
                 results.setdefault(key, solver.solutions)
         except FileNotFoundError:
@@ -84,19 +83,27 @@ class Menu:
             self.display_menu()
         except KeyboardInterrupt:
             dump_name = datetime.datetime.now().strftime("%Y-%b-%d_%H-%M-%S") + ".save"
-            self.save_partial(file_handler, dump_name)
+            self.save_partial(file_handler, results, dump_name)
             print("Se ha interrumpido la ejecución, dump guardado en %s" % dump_name)
             exit(0)
 
         file_handler.write_results_to_file(results)
         print("Ha finalizado la resolución! encontrará en %s los resultados" % output_file)
 
+    @staticmethod
+    def show_solution_callback(board):
+        """
+        Método callback para imprimir soluciones por consola
+        """
+        print("Se ha encontrado una solución: ")
+        board.print()
+
     def test_bench(self):
         n_list = [9, 16, 25, 36, 49]
 
         for index, i in enumerate(n_list):
             board = Board([[0 for x in range(i)] for y in range(i)])
-            solver = Solver(board, target_solutions=10, emtpy_board=True)
+            solver = Solver(board, target_solutions=10)
             start = time.time()
             solver.solve()
             end = time.time()

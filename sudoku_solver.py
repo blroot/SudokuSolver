@@ -1,12 +1,12 @@
 from exceptions import InvalidRowLength, NotAnInteger, NotAValidInteger
-from Menu import Menu
+from ConsoleApp import ConsoleApp
 
 
 if __name__ == "__main__":
     try:
-        menu = Menu()
+        app = ConsoleApp()
         while True:
-            menu.display_menu()
+            app.display_menu()
 
     except InvalidRowLength as e:
         print("La fila %s no tiene la dimensión correcta" % e.row_number)
