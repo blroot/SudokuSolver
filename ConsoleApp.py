@@ -9,22 +9,20 @@ class ConsoleApp:
     def __init__(self):
         self.menu_options = {
             1: self.solve_from_csv,
-            2: self.save_partial,
-            3: self.load_partial,
-            4: self.test_bench,
-            5: exit
+            2: self.load_partial,
+            3: self.test_bench,
+            4: exit
         }
 
     def display_menu(self):
         print("Bienvenido.... Por favor, seleccione una opción")
         print("1 - Resolver tableros desde archivo CSV")
-        print("2 - Guardar ejecución parcial")
-        print("3 - Continuar una resolución guardada")
-        print("4 - Banco de pruebas")
-        print("5 - Salir")
+        print("2 - Continuar una resolución guardada")
+        print("3 - Banco de pruebas")
+        print("4 - Salir")
 
         try:
-            option = int(input("Seleccione una opción [1-5]: "))
+            option = int(input("Seleccione una opción [1-4]: "))
 
             option_function = self.menu_options.get(option, None)
             if not option_function:
